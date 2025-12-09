@@ -1,44 +1,92 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const user = auth.currentUser;
 
-  function logout() {
+  function handleLogout() {
     signOut(auth);
     navigate("/");
   }
 
   return (
-    <div style={{ padding: 30 }}>
-      <h1>Dashboard</h1>
+    <div style={styles.container}>
+      <h1 style={styles.title}>NihonGO Dashboard</h1>
+      <h3 style={styles.subtitle}>Welcome, {user?.email}</h3>
 
-      {/* USER STATS SECTION */}
-      <div style={{ border: "1px solid #ccc", padding: 20, marginBottom: 20 }}>
-        <h3>Your Progress</h3>
-        <p>XP: 0</p>
+      {/* SECTION: PROGRESS SUMMARY */}
+      <div style={styles.card}>
+        <h2>Progress Summary</h2>
         <p>Scenarios Completed: 0</p>
-        <p>Streak: 0 days</p>
+        <p>Vocabulary Learned: 0</p>
       </div>
 
-      {/* MENU SECTION */}
-      <div>
-        <button onClick={() => navigate("/scenarios")}>
-          View Scenarios
+      {/* SECTION: NAVIGATION BUTTONS */}
+      <div style={styles.buttonContainer}>
+        <button style={styles.button} onClick={() => navigate("/scenarios")}>
+          Start Scenarios
         </button>
 
-        <br /><br />
-
-        <button onClick={() => navigate("/progress")}>
-          View Progress Details
+        <button style={styles.button} onClick={() => alert("Coming soon!")}>
+          Vocabulary
         </button>
 
-        <br /><br />
-
-        <button onClick={logout}>Logout</button>
+        <button style={styles.button} onClick={() => alert("Coming soon!")}>
+          Progress Tracking
+        </button>
       </div>
+
+      <button style={styles.logoutButton} onClick={handleLogout}>
+        Logout
+      </button>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    padding: "40px",
+    maxWidth: "600px",
+    margin: "auto",
+    color: "white",
+  },
+  title: {
+    fontSize: "36px",
+    marginBottom: "10px",
+  },
+  subtitle: {
+    marginBottom: "30px",
+  },
+  card: {
+    background: "#222",
+    padding: "20px",
+    marginBottom: "30px",
+    borderRadius: "10px",
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+  button: {
+    padding: "15px",
+    fontSize: "16px",
+    background: "#444",
+    border: "1px solid #999",
+    borderRadius: "8px",
+    cursor: "pointer",
+    color: "white",
+  },
+  logoutButton: {
+    marginTop: "40px",
+    padding: "10px 20px",
+    background: "#880000",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+  },
+};

@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Scenarios from "./pages/Scenario";
 import Progress from "./pages/progress";
+import ScenarioStart from "./pages/ScenarioStart";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -44,6 +45,15 @@ export default function App() {
           }
         />
 
+        <Route  
+          path = "/scenario/:id"
+          element={
+            <ProtectedRoute>
+              <ScenarioStart />
+            </ProtectedRoute>
+          }
+        />
+        
       </Routes>
     </Router>
   );
