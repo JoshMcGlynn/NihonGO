@@ -1,72 +1,42 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-
-const SCENARIOS = [
-  {
-    id: "restaurant_basic",
-    title: "Ordering Food at a Restaurant",
-    description: "Learn how to order food politely and interact with staff.",
-  },
-  {
-    id: "train_directions",
-    title: "Asking for Train Directions",
-    description: "Practice asking for help navigating Japanese train systems.",
-  },
-  {
-    id: "cityhall_procedure",
-    title: "City Hall Procedures",
-    description: "A more formal scenario involving residency paperwork.",
-  },
-];
+import { useParams, Link } from "react-router-dom";
+import { sampleScenario } from "../data/sampleScenario";
 
 export default function ScenarioStart() {
   const { id } = useParams();
-  const navigate = useNavigate();
-
-  const scenario = SCENARIOS.find((s) => s.id === id);
-
-  if (!scenario) {
-    return <div style={{ padding: 30 }}>Scenario not found.</div>;
-  }
-
-  function startScenario(difficulty) {
-    navigate(`/scenario/${id}/run?difficulty=${difficulty}`);
-  }
+  const scenario = sampleScenario; // only one scenario for now
 
   return (
-    <div style={styles.container}>
+    <div style={{ padding: "40px", color: "white" }}>
       <h1>{scenario.title}</h1>
       <p>{scenario.description}</p>
 
-      <h2>Select Difficulty</h2>
+      <h2 style={{ marginTop: "30px" }}>Select Difficulty</h2>
 
-      <div style={styles.cardContainer}>
-        {/* EASY */}
-        <div style={styles.card} onClick={() => startScenario("easy")}>
-          <h3>Easy</h3>
-          <p>• Kanji + Kana • Romaji  • Translations</p>
-        </div>
-
-        {/* MEDIUM */}
-        <div style={styles.card} onClick={() => startScenario("medium")}>
-          <h3>Medium</h3>
-          <p>• Kana + Kanji  • Romaji  • No Translations</p>
-        </div>
-
-        {/* HARD */}
-        <div style={styles.card} onClick={() => startScenario("hard")}>
-          <h3>Hard</h3>
-          <p>• Kanji and Kana only  • No Romaji  • No Translations</p>
-        </div>
+      <div className="difficultyBox">
+        <Link to={`/scenario/${id}/easy`}>Easy</Link>
+        <p>• English • Romaji • Hiragana/Katakana • Kanji/Kana</p>
       </div>
 
-      <button style={styles.backButton} onClick={() => navigate("/scenarios")}>
-        Back to Scenarios
-      </button>
+      <div className="difficultyBox">
+        <Link to={`/scenario/${id}/medium`}>Medium</Link>
+        <p>• Romaji • Hiragana/Katakana • Kanji/Kana</p>
+      </div>
+
+      <div className="difficultyBox">
+        <Link to={`/scenario/${id}/hard`}>Hard</Link>
+        <p>• Kanji/Kana only</p>
+      </div>
+
+      <Link
+        to="/scenarios"
+        style={{ display: "inline-block", marginTop: 30, color: "#4caf50" }}
+      >
+        ← Back to Scenario List
+      </Link>
     </div>
   );
 }
-
 const styles = {
   container: {
     padding: 30,

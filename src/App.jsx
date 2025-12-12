@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Scenarios from "./pages/Scenario";
+import ScenarioList from "./pages/ScenarioList";
 import Progress from "./pages/progress";
 import ScenarioStart from "./pages/ScenarioStart";
+import ScenarioRunner from "./pages/ScenarioRunner";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -13,11 +14,10 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        
-        {/* Public Route */}
+        {/* Public */}
         <Route path="/" element={<Login />} />
 
-        {/* Protected Routes */}
+        {/* Private */}
         <Route
           path="/dashboard"
           element={
@@ -31,7 +31,7 @@ export default function App() {
           path="/scenarios"
           element={
             <ProtectedRoute>
-              <Scenarios />
+              <ScenarioList />
             </ProtectedRoute>
           }
         />
@@ -45,15 +45,25 @@ export default function App() {
           }
         />
 
-        <Route  
-          path = "/scenario/:id"
+        {/* Step 1: Difficulty Selection */}
+        <Route
+          path="/scenario/:id"
           element={
             <ProtectedRoute>
               <ScenarioStart />
             </ProtectedRoute>
           }
         />
-        
+
+        {/* Step 2: Actual Scenario Runner */}
+        <Route
+          path="/scenario/:id/:difficulty"
+          element={
+            <ProtectedRoute>
+              <ScenarioRunner />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

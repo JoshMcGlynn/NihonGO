@@ -1,0 +1,109 @@
+.scenarioContainer {
+  padding: 40px;
+  color: white;
+  max-width: 800px;
+  margin: auto;
+}
+
+.npcBox {
+  background: #1e1e1e;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.dialogueText {
+  margin-bottom: 10px;
+}
+
+.dialogue-en {
+  color: #a5d6ff;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.dialogue-roma {
+  color: #e8e8a6;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.dialogue-furi {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.dialogue-jp {
+  color: white;
+  font-size: 26px;
+  margin-top: 5px;
+}
+
+.choicesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.choiceButton {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  padding: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.choiceButton:hover {
+  background: #333;
+}
+
+.resultBox {
+  padding: 25px;
+  margin-top: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.correct {
+  background: #144a14;
+}
+
+.wrong {
+  background: #5a1a1a;
+}
+
+.nextButton,
+.retryButton,
+.finishButton,
+.finishButtonAlt {
+  margin-top: 15px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nextButton {
+  background: #4caf50;
+  color: white;
+}
+
+.retryButton {
+  background: #f44336;
+  color: white;
+}
+
+.finishButton {
+  background: #2196f3;
+  color: white;
+  margin-right: 10px;
+}
+
+.finishButtonAlt {
+  background: #777;
+  color: white;
+}
