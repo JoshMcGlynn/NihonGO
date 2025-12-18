@@ -18,15 +18,32 @@ export default function ScenarioRunner() {
     if (choice.correct) {
       setShowResult("correct");
       setWrongNpcLine(null);
-    } else {
-      setWrongNpcLine({
-        jp: choice.wrongNpc || "それは違います。もう一度試してください。",
-        reading: "",
-        roma: "",
-        en: ""
-      });
-      setShowResult("wrong");
+      return;
     }
+
+    // Support BOTH:
+    // 1) wrongNpc: "string"
+    // 2) wrongNpc: { jp, reading, roma, en }
+    let wrongLine;
+
+    if (typeof choice.wrongNpc === "object" && choice.wrongNpc !== null) {
+      wrongLine = {
+        jp: choice.wrongNpc.jp || "それは違います。もう一度試してください。",
+        reading: choice.wrongNpc.reading || "",
+        roma: choice.wrongNpc.roma || "",
+        en: choice.wrongNpc.en || ""
+      };
+    } else {
+      wrongLine = {
+        jp: choice.wrongNpc || "それは違います。もう一度試してください。",
+        reading: choice.wrongNpcReading || "",
+        roma: choice.wrongNpcRoma || "",
+        en: choice.wrongNpcEn || ""
+      };
+    }
+
+    setWrongNpcLine(wrongLine);
+    setShowResult("wrong");
   }
 
   function nextStep() {
