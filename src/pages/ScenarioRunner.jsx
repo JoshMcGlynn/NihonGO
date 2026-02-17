@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { sampleScenario } from "../data/sampleScenario";
 import "./ScenarioRunner.css";
+import { awardScenarioCompletion } from "../services/progressService";
+import { auth } from "../firebaseConfig";
 
 export default function ScenarioRunner() {
   const { id, difficulty } = useParams();
@@ -46,13 +48,30 @@ export default function ScenarioRunner() {
     setShowResult("wrong");
   }
 
-  function nextStep() {
+  const [xpResult, setXpResult] = useState(null);
+  async function nextStep() {
     setShowResult(null);
     setWrongNpcLine(null);
 
     if (stepIndex + 1 < scenario.steps.length) {
       setStepIndex(stepIndex + 1);
     } else {
+      const user = auth.currentUser;
+
+      if (user) {
+        try {
+          const result = await awardScenarioCompletion(
+            user.uid,
+            id,
+            difficulty
+          );
+
+          setXpResult(result);
+        } catch(error) {
+          console.error("XP Award Error: ", error);
+        }
+      }
+
       setScenarioFinished(true);
     }
   }
@@ -84,27 +103,43 @@ export default function ScenarioRunner() {
   }
 
   // Finished screen
-  if (scenarioFinished) {
-    return (
-      <div className="scenarioContainer">
-        <h1>Scenario Complete!</h1>
+if (scenarioFinished) {
+  return (
+    <div className="scenarioContainer">
+      <h1>Scenario Complete!</h1>
 
-        <p>
-          You successfully completed:
-          <strong> {scenario.title}</strong>
-        </p>
+      <p>
+        You successfully completed:
+        <strong> {scenario.title}</strong>
+      </p>
 
-        <div className="finishButtons">
-          <Link to="/scenarios" className="finishButton">
-            Back to Scenario List
-          </Link>
-          <Link to="/dashboard" className="finishButtonAlt">
-            Return to Dashboard
-          </Link>
+      {xpResult && (
+        <div style={{ marginTop: "20px" }}>
+          {xpResult.alreadyCompleted ? (
+            <p>
+              You have already completed this difficulty. No XP awarded.
+            </p>
+          ) : (
+            <p>
+              🎉 You earned {xpResult.xpAwarded} XP!
+              <br />
+              Total XP: {xpResult.totalXp}
+            </p>
+          )}
         </div>
+      )}
+
+      <div className="finishButtons">
+        <Link to="/scenarios" className="finishButton">
+          Back to Scenario List
+        </Link>
+        <Link to="/dashboard" className="finishButtonAlt">
+          Return to Dashboard
+        </Link>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   const npcLine = wrongNpcLine || step.npc;
 

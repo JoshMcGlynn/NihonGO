@@ -2,10 +2,31 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
+import { awardScenarioCompletion } from "../services/progressService";
 
 export default function Dashboard() {
+
   const navigate = useNavigate();
   const user = auth.currentUser;
+
+  async function testXP() {
+    if (!user) {
+      console.log("No user logged in");
+      return;
+    }
+
+    try {
+      const result = await awardScenarioCompletion(
+        user.uid,
+        "test_scenario",
+        "easy"
+      );
+
+      console.log(result);
+    } catch (error) {
+      console.error("XP Error:", error);
+    }
+  }
 
   function handleLogout() {
     signOut(auth);
@@ -17,14 +38,12 @@ export default function Dashboard() {
       <h1 style={styles.title}>NihonGO Dashboard</h1>
       <h3 style={styles.subtitle}>Welcome, {user?.email}</h3>
 
-      {/* SECTION: PROGRESS SUMMARY */}
       <div style={styles.card}>
         <h2>Progress Summary</h2>
         <p>Scenarios Completed: 0</p>
         <p>Vocabulary Learned: 0</p>
       </div>
 
-      {/* SECTION: NAVIGATION BUTTONS */}
       <div style={styles.buttonContainer}>
         <button style={styles.button} onClick={() => navigate("/scenarios")}>
           Start Scenarios
@@ -38,6 +57,8 @@ export default function Dashboard() {
           Progress Tracking
         </button>
       </div>
+
+      <button onClick={testXP}>Test XP</button>
 
       <button style={styles.logoutButton} onClick={handleLogout}>
         Logout
