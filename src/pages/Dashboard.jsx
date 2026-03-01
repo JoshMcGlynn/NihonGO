@@ -53,7 +53,7 @@ export default function Dashboard() {
           Vocabulary
         </button>
 
-        <button style={styles.button} onClick={() => alert("Coming soon!")}>
+        <button style={styles.button} onClick={() => navigate("/progress")}>
           Progress Tracking
         </button>
       </div>
