@@ -7,6 +7,7 @@ import ScenarioList from "./pages/ScenarioList";
 import Progress from "./pages/progress";
 import ScenarioStart from "./pages/ScenarioStart";
 import ScenarioRunner from "./pages/ScenarioRunner";
+import CommunityScenarioCreator from "./pages/CommunityScenarioCreator";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -61,6 +62,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ScenarioRunner />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/community/create"
+          element={
+            <ProtectedRoute>
+              <CommunityScenarioCreator/>
             </ProtectedRoute>
           }
         />

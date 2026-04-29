@@ -63,6 +63,10 @@ export default function Dashboard() {
       <button style={styles.logoutButton} onClick={handleLogout}>
         Logout
       </button>
+
+      <button style={styles.button} onClick={() => navigate("/community/create")}>
+        Create Scenario
+      </button>
     </div>
   );
 }
