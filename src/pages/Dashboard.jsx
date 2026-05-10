@@ -1,15 +1,42 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { awardScenarioCompletion } from "../services/progressService";
 
 export default function Dashboard() {
 
   const navigate = useNavigate();
   const user = auth.currentUser;
+  const [username, setUsername] = useState("");
 
-  async function testXP() {
+  useEffect(() => {
+    async function fetchUserProfile(){
+      const user = auth.currentUser;
+
+      if(!user) return;
+
+      try{
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if(userSnap.exists()){
+          const data = userSnap.data();
+          setUsername(data.username || user.email);
+        } else{
+          setUsername(user.email);
+        }
+      } catch(error){
+        console.error("Error loading user profile:", error);
+        setUsername(user.email);
+      }
+    }
+
+    fetchUserProfile();
+  }, []);
+
+/*  async function testXP() {
     if (!user) {
       console.log("No user logged in");
       return;
@@ -26,7 +53,7 @@ export default function Dashboard() {
     } catch (error) {
       console.error("XP Error:", error);
     }
-  }
+  } */
 
   function handleLogout() {
     signOut(auth);
@@ -36,7 +63,7 @@ export default function Dashboard() {
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>NihonGO Dashboard</h1>
-      <h3 style={styles.subtitle}>Welcome, {user?.email}</h3>
+      <h3 style={styles.subtitle}>Welcome, {username || user?.email}</h3>
 
       <div style={styles.card}>
         <h2>Progress Summary</h2>
@@ -56,9 +83,11 @@ export default function Dashboard() {
         <button style={styles.button} onClick={() => navigate("/progress")}>
           Progress Tracking
         </button>
-      </div>
 
-      <button onClick={testXP}>Test XP</button>
+        <button style={styles.button} onClick={() => navigate("/community")}>
+          Community Scenarios
+        </button>
+      </div>
 
       <button style={styles.logoutButton} onClick={handleLogout}>
         Logout

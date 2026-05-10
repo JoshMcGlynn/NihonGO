@@ -8,8 +8,11 @@ import Progress from "./pages/progress";
 import ScenarioStart from "./pages/ScenarioStart";
 import ScenarioRunner from "./pages/ScenarioRunner";
 import CommunityScenarioCreator from "./pages/CommunityScenarioCreator";
-
+import CommunityScenarios from "./pages/CommunityScenarios";
+import CommunityScenarioRunner from "./pages/CommunityScenarioRunner";
+import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+
 
 export default function App() {
   return (
@@ -71,6 +74,33 @@ export default function App() {
           element={
             <ProtectedRoute>
               <CommunityScenarioCreator/>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+        path="/community"
+        element={
+          <ProtectedRoute>
+            <CommunityScenarios />
+          </ProtectedRoute>
+        }
+        />
+
+        <Route
+          path="/community/:id"
+          element={
+            <ProtectedRoute>
+              <CommunityScenarioRunner />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/profile/:userId"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
