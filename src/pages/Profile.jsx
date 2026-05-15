@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {useParams, Link} from "react-router-dom";
-import {doc, getDoc, collection, getDocs, query, where} from "firebase/firestore";
-import {db} from "../firebaseConfig";
+import {doc, getDoc, collection, getDocs, query, where, deleteDoc} from "firebase/firestore";
+import {db, auth} from "../firebaseConfig";
 import {calculateLevelData} from "../utils/levelUtils";
 
 export default function Profile(){
     const {userId} = useParams();
+    const currentUser = auth.currentUser;
+    const isOwnProfile = currentUser?.uid === userId;
 
     const [profile, setProfile] = useState(null);
     const [createdScenarios, setCreatedScenarios] = useState([]);
@@ -73,6 +75,26 @@ export default function Profile(){
             </div>
         );
     }
+    
+    async function handleDeleteScenario(scenarioId){
+        const confirmDelete = window.confirm(
+            "Are you sure that you want to delete this scenario? This action cannot be undone."
+        );
+
+        if(!confirmDelete) return;
+
+        try{
+            await deleteDoc(doc(db, "communityScenarios", scenarioId));
+
+            setCreatedScenarios((prev) => 
+            prev.filter((scenario) => scenario.id !== scenarioId));
+
+            alert("Scenario deleted successfully.");
+        }   catch(error){
+            console.error("Error deleting scenario:", error);
+            alert("Something went wrong while deleting the scenario.");
+        }
+    }
 
     return (
         <div style={styles.container}>
@@ -123,6 +145,15 @@ export default function Profile(){
                             <Link to={`/community/${scenario.id}`} style={styles.playLink}>
                             Play Scenario 
                             </Link>
+
+                            {isOwnProfile && (
+                                <button 
+                                    onClick={() => handleDeleteScenario(scenario.id)}
+                                    style={styles.deleteButton}
+                                >
+                                    Delete Scenario
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -186,5 +217,16 @@ const styles = {
     ratingText: {
         color: "#ffcc00",
         fontWeight: "bold"
+    },
+    deleteButton: {
+        display: "inline-block",
+        marginTop: "15px",
+        marginLeft: "10px",
+        padding: "10px 15px",
+        borderRadius: "8px",
+        border: "none",
+        background: "#880000",
+        color: "white",
+        cursor: "pointer"
     }
 };
