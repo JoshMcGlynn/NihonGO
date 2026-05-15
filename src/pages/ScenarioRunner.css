@@ -107,3 +107,25 @@
   background: #777;
   color: white;
 }
+
+.ttsButton{
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  background: #444;
+  color: white;
+}
+
+.ttsButton:hover {
+  background: #666;
+}
+
+.choiceWrapper{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}

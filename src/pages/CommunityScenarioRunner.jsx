@@ -4,6 +4,7 @@ import {doc, getDoc} from "firebase/firestore";
 import {db, auth} from "../firebaseConfig";
 import "./ScenarioRunner.css";
 import { submitScenarioRating } from "../services/ratingService";
+import { speakJapanese } from "../utils/speechUtils";
 
 export default function CommunityScenarioRunner(){
     const{id} = useParams();
@@ -215,18 +216,33 @@ export default function CommunityScenarioRunner(){
                 Step {stepIndex + 1} / {scenario.steps.length}
             </h3>
 
-            <div className="npcBox">{renderTextLayers(npcLine)}</div>
+            <div className="npcBox">{renderTextLayers(npcLine)}
+
+                <button className="ttsButton" 
+                onClick={() => speakJapanese(npcLine.jp)}
+                >
+                    🔊
+                </button>
+            </div>
 
             {showResult === null && (
                 <div className="choicesContainer">
                     {step.choices.map((choice, index) => (
-                        <button
-                            key={index}
-                            className="choiceButton"
-                            onClick={() => handleChoice(choice)}
-                        >
-                            {renderTextLayers(choice)}
-                        </button>
+                        <div key={index} className="choiceWrapper">
+                            <button
+                                className="choiceButton"
+                                onClick={() => handleChoice(choice)}
+                            >
+                                {renderTextLayers(choice)}
+                            </button>
+
+                            <button className="ttsButton"
+                            onClick={() => speakJapanese(choice.jp)}
+                            >
+                                🔊
+                            </button>
+
+                        </div>
                     ))}
                     </div>
             )}

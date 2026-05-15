@@ -4,6 +4,7 @@ import { sampleScenario } from "../data/sampleScenario";
 import "./ScenarioRunner.css";
 import { awardScenarioCompletion } from "../services/progressService";
 import { auth } from "../firebaseConfig";
+import { speakJapanese } from "../utils/speechUtils";
 
 export default function ScenarioRunner() {
   const { id, difficulty } = useParams();
@@ -28,7 +29,7 @@ export default function ScenarioRunner() {
     // 2) wrongNpc: { jp, reading, roma, en }
     let wrongLine;
 
-    if (typeof choice.wrongNpc === "object" && choice.wrongNpc !== null) {
+    if (typeof choice.wrongNpc === "object" && choice.wrongNpc !== null) { 
       wrongLine = {
         jp: choice.wrongNpc.jp || "それは違います。もう一度試してください。",
         reading: choice.wrongNpc.reading || "",
@@ -151,23 +152,38 @@ if (scenarioFinished) {
         {difficulty.toUpperCase()}
       </h3>
 
-      {/* NPC dialogue */}
-      <div className="npcBox">{renderTextLayers(npcLine)}</div>
+      { /*NPC dialogue*/}
+      <div className="npcBox">{renderTextLayers(npcLine)}
+
+        <button className="ttsButton"
+        onClick={() => speakJapanese(npcLine.reading || npcLine.jp)}
+        >
+          🔊
+        </button>
+      </div>
 
       {/* Player choices (hidden when result panel is visible) */}
       {showResult === null && (
         <div className="choicesContainer">
           {step.choices.map((choice, index) => (
-            <button
-              key={index}
-              className="choiceButton"
-              onClick={() => handleChoice(choice)}
-            >
-              {renderTextLayers(choice)}
-            </button>
-          ))}
+            <div key={index} className="choiceWrapper">
+              <button
+                className="choiceButton"
+                onClick={() => handleChoice(choice)}
+              >
+                  {renderTextLayers(choice)}
+              </button>
+
+              <button className="ttsButton"
+              onClick={() => speakJapanese(choice.reading || choice.jp)}
+              >
+                  🔊
+              </button>
+
+            </div>
+        ))}
         </div>
-      )}
+    )}
 
       {/* Result panels */}
       {showResult === "correct" && (
