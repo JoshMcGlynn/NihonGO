@@ -97,12 +97,15 @@ export default function Login(){
             <div style={{ padding: 30 }}>
             <h1>NihonGO</h1>
             <h3>{mode === "login" ? "Login" : "Register"}</h3>
-
-            <input
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            /><br/>
+            {mode === "register" && (
+                <>
+                    <input
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    /><br/>
+                </>
+            )}
 
             <input 
                 placeholder="Email"
