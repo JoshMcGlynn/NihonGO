@@ -3,17 +3,20 @@ import {collection, addDoc, serverTimestamp, doc, getDoc} from "firebase/firesto
 import {db, auth} from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { validateScenario } from "../utils/scenarioValidation";
-import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
 
  export default function CommunityScenarioCreator(){
     const navigate = useNavigate();
+
+    //Scenario data is stored as a nested object:
+    //scenario -> steps -> npc dialogue and choices
+    //This structure matches the format used by both official and community scenario runners
     const [scenarioData, setScenarioData] = useState({
         title: "",
         description: "",
         steps: [
             {
                 npc: { en: "", roma: "", reading: "", jp: ""},
-                choices: [
+                choices: [ 
                     { en: "", roma: "", reading: "", jp: "", correct: true, wrongNpc: {en: "", roma: "", reading: "", jp: "" } },
                     { en: "", roma: "", reading: "", jp: "", correct: false, wrongNpc: {en: "", roma: "", reading: "", jp:  ""} }
                 ]
@@ -21,7 +24,11 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
         ]
     });
 
-    //Helper functions: 
+    //Helper functions for building the scenario dynamically
+    //these allow users to add/remove dialogue steps and response choices
+
+    //Adds a new blank dialogue step with two default choices
+    //Each new step starts with one correct and one incorrect answer option
     function addStep(){
         setScenarioData(prev => ({
             ...prev, 
@@ -38,6 +45,7 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
         }));
     }
 
+    //removes a dialogue step, validation layer ensures that at least one step remains before upload
     function removeStep(stepIndex){
         setScenarioData((prev) => ({
             ...prev,
@@ -45,6 +53,7 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
         }));
     }
 
+    //adds another response option to a step, new choices are incorrect by default until the user marks it as correct
     function addChoice(stepIndex){
         setScenarioData((prev) => {
             const updatedSteps = [...prev.steps];
@@ -70,6 +79,7 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
         });
     }
 
+    //removes a response choice, but prevents the step going below two choices
     function removeChoice(stepIndex, choiceIndex){
         setScenarioData((prev) => {
             const updatedSteps = [...prev.steps];
@@ -88,7 +98,8 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
         });
     }
 
-
+    //Makes sure that only one answer per step is marked as correct
+    //When one choice is selected, all other choices become incorrect
     function setCorrectChoice(stepIndex, choiceIndex){
         setScenarioData((prev) => {
             const updatedSteps = [...prev.steps];
@@ -179,6 +190,7 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
         });
     }
 
+    //Saves the completed scenario to the Firestore, scenario is validated before upload to prevent incomplete content or wrong input
     async function saveScenario(){
         const user = auth.currentUser;
 
@@ -187,6 +199,7 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
             return;
         }
 
+        //Validation is handled in a separate utility file (scenarioValidation.js)
         const validationError = validateScenario(scenarioData);
 
         if(validationError){
@@ -197,6 +210,7 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
         let username = "Anonymous";
 
         try{
+            //Fetch creator's username to show on community scenario cards
             const userRef = doc(db, "users", user.uid);
             const userSnap = await getDoc(userRef);
 
@@ -204,6 +218,7 @@ import { isLatinText, isJapaneseText } from "../utils/scenarioValidation";
                 username = userSnap.data().username || "Anonymous";
             }
 
+            //Firestore stores the full scenario structure along with creator data
             const scenarioToSave = {
                 title: scenarioData.title,
                 description: scenarioData.description,

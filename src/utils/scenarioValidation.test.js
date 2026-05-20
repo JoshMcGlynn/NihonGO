@@ -18,7 +18,7 @@ function createValidScenario(){
                         en: "Beer please.",
                         roma: "Biiru o onegaishimasu",
                         reading: "ビール を おねがいします。",
-                        jp: "ラーメンをお願いします。",
+                        jp: "ビールをお願いします。",
                         correct: true,
                         wrongNpc: {
                             en: "",

@@ -1,8 +1,12 @@
+//Allows English/Romaji style text, numbers, spaces and basic punctuation
+//Macrons are included for romaji such as chū, gakkō, or Tōkyō
 export function isLatinText(value){
     const latinRegex = /^[A-Za-z0-9āīūēōĀĪŪĒŌ\s.,!?'"()\-:;]+$/;
     return latinRegex.test(value.trim());
 }
 
+//Allows Hiragana, Katakana, Kanji, Japanese punctuation, numbers and spaces
+//This is to stop English text from being allowed in Japanese fields
 export function isJapaneseText(value){
     const japaneseRegex = 
         /^[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9faf\u3000-\u303f0-9\s。、！？ー・（）「」『』]+$/;
@@ -23,6 +27,8 @@ export function validateScenario(scenarioData){
         return "A scenario must contain at least one step.";
     }
 
+    //Each scenario is made up of ordered dialogue steps
+    //Each step must contain NPC dialogue and at least 2 response choices
     for(let i = 0; i < scenarioData.steps.length; i++){
         const step = scenarioData.steps[i];
 
@@ -50,6 +56,8 @@ export function validateScenario(scenarioData){
 
         const correctChoices = choices.filter((choice) => choice.correct);
 
+        //The scenario runner expects exactly one correct answer per step
+        //This prevents impossible steps or steps with multiple correct paths
         if(correctChoices.length !== 1){
             return `Step ${i + 1}: Each step must have exactly one correct choice.`;
         }
@@ -74,6 +82,7 @@ export function validateScenario(scenarioData){
             }
 
             //NPC reply validation, will only validate fields if the user actually typed something into them, so blank fields are allowed and will return the default wrong reply dialogue
+            //If the user does provide incorrect NPC dialogue, then it is validated like all other fields
             if(!choice.correct && choice.wrongNpc){
                 if(choice.wrongNpc.en.trim() && !isLatinText(choice.wrongNpc.en)){
                     return `Step ${i + 1}, Choice ${j + 1}: Wrong reply English must use English/Romaji characters only.`;
