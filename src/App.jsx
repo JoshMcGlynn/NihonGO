@@ -12,6 +12,7 @@ import CommunityScenarios from "./pages/CommunityScenarios";
 import CommunityScenarioRunner from "./pages/CommunityScenarioRunner";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedLayout from "./components/ProtectedLayout";
 
 
 export default function App() {
@@ -23,88 +24,49 @@ export default function App() {
 
         {/* Private */}
         <Route
-          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <ProtectedLayout />
             </ProtectedRoute>
           }
-        />
+        >
 
-        <Route
-          path="/scenarios"
-          element={
-            <ProtectedRoute>
-              <ScenarioList />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route
-          path="/progress"
-          element={
-            <ProtectedRoute>
-              <Progress />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/scenarios" element={<ScenarioList />} />
 
-        {/* Step 1: Difficulty Selection */}
-        <Route
-          path="/scenario/:id"
-          element={
-            <ProtectedRoute>
-              <ScenarioStart />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/progress" element={ <Progress />} />
 
-        {/* Step 2: Actual Scenario Runner */}
+        {/* Difficulty Selection */}
+        <Route path="/scenario/:id" element={<ScenarioStart />} />
+
+        {/* Actual Scenario Runner */}
         <Route
           path="/scenario/:id/:difficulty"
-          element={
-            <ProtectedRoute>
-              <ScenarioRunner />
-            </ProtectedRoute>
-          }
+          element={ <ScenarioRunner /> }
         />
 
         <Route
           path="/community/create"
-          element={
-            <ProtectedRoute>
-              <CommunityScenarioCreator/>
-            </ProtectedRoute>
-          }
+          element={ <CommunityScenarioCreator/> }
         />
 
         <Route
-        path="/community"
-        element={
-          <ProtectedRoute>
-            <CommunityScenarios />
-          </ProtectedRoute>
-        }
+          path="/community"
+          element={ <CommunityScenarios /> }
         />
 
         <Route
           path="/community/:id"
-          element={
-            <ProtectedRoute>
-              <CommunityScenarioRunner />
-            </ProtectedRoute>
-          }
+          element={ <CommunityScenarioRunner /> } 
         />
         
         <Route
           path="/profile/:userId"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
+          element={ <Profile /> }
         />
-      </Routes>
+        </Route>
+      </Routes> 
     </Router>
   );
 }
